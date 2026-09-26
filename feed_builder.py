@@ -5,8 +5,10 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import contextlib
 import datetime as dt
 import email.utils
+import gzip
 import hashlib
 import io
 import json
@@ -69,8 +71,16 @@ def fetch_repository(repo: str, url: str) -> dict[str, dict[str, str]]:
         archive = response.read()
 
     packages: dict[str, dict[str, str]] = {}
-    decompressor = zstandard.ZstdDecompressor()
-    with decompressor.stream_reader(io.BytesIO(archive)) as uncompressed:
+    with contextlib.ExitStack() as stack:
+        source = io.BytesIO(archive)
+        if archive.startswith(b"\x1f\x8b"):
+            uncompressed = stack.enter_context(gzip.GzipFile(fileobj=source))
+        elif archive.startswith(b"\x28\xb5\x2f\xfd"):
+            uncompressed = stack.enter_context(zstandard.ZstdDecompressor().stream_reader(source))
+        else:
+            raise RuntimeError(
+                f"Formato del database {repo} non riconosciuto: {archive[:4].hex()}"
+            )
         with tarfile.open(fileobj=uncompressed, mode="r|") as tar:
             for member in tar:
                 if not member.isfile() or not member.name.endswith("/desc"):

@@ -1,4 +1,5 @@
 import datetime as dt
+import gzip
 import io
 import json
 import tempfile
@@ -21,17 +22,20 @@ class ParseDescTests(unittest.TestCase):
         self.assertEqual(result["VERSION"], "1.2-3")
         self.assertEqual(result["DESC"], "A package")
 
-    def test_reads_package_metadata_from_zstandard_pacman_database(self):
+    def test_reads_package_metadata_from_gzip_and_zstandard_pacman_databases(self):
         desc = b"%NAME%\nexample\n\n%VERSION%\n1.2-3\n\n%DESC%\nA package\n"
         tar_bytes = io.BytesIO()
         with tarfile.open(fileobj=tar_bytes, mode="w") as archive:
             info = tarfile.TarInfo("example-1.2-3/desc")
             info.size = len(desc)
             archive.addfile(info, io.BytesIO(desc))
-        compressed = zstandard.ZstdCompressor().compress(tar_bytes.getvalue())
+        uncompressed_tar = tar_bytes.getvalue()
 
         class Response:
             status = 200
+
+            def __init__(self, payload):
+                self.payload = payload
 
             def __enter__(self):
                 return self
@@ -40,12 +44,23 @@ class ParseDescTests(unittest.TestCase):
                 return False
 
             def read(self):
-                return compressed
+                return self.payload
 
-        with patch.object(feed_builder.urllib.request, "urlopen", return_value=Response()):
-            packages = feed_builder.fetch_repository("core", "https://repo.invalid/core.db")
-        self.assertEqual(packages["example"]["version"], "1.2-3")
-        self.assertEqual(packages["example"]["description"], "A package")
+        for compressed in (
+            gzip.compress(uncompressed_tar),
+            zstandard.ZstdCompressor().compress(uncompressed_tar),
+        ):
+            with self.subTest(magic=compressed[:4].hex()):
+                with patch.object(
+                    feed_builder.urllib.request,
+                    "urlopen",
+                    return_value=Response(compressed),
+                ):
+                    packages = feed_builder.fetch_repository(
+                        "core", "https://repo.invalid/core.db"
+                    )
+                self.assertEqual(packages["example"]["version"], "1.2-3")
+                self.assertEqual(packages["example"]["description"], "A package")
 
 
 class EventTests(unittest.TestCase):
