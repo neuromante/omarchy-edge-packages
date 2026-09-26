@@ -134,9 +134,9 @@ BarWidget {
 
   readonly property string tooltipText: {
     if (root.error !== "") return "Omarchy edge RSS: " + root.error
-    if (root.checking && root.items.length === 0) return "Lettura novità Omarchy edge…"
-    if (!root.hasItems) return "Nessuna novità recente in Omarchy edge"
-    var lines = [root.totalCount + " eventi recenti in Omarchy edge"]
+    if (root.checking && root.items.length === 0) return "Loading Omarchy edge updates…"
+    if (!root.hasItems) return "No recent Omarchy edge updates"
+    var lines = [root.totalCount + " recent Omarchy edge events"]
     for (var i = 0; i < Math.min(root.items.length, 10); i++)
       lines.push(root.items[i].title)
     if (root.totalCount > root.items.length) lines.push("…")

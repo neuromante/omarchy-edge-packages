@@ -16,22 +16,22 @@ MAX_FEED_BYTES = 1_000_000
 
 def read_feed(url: str, limit: int) -> dict[str, object]:
     if not url.startswith("https://"):
-        raise ValueError("L'URL del feed deve usare HTTPS")
+        raise ValueError("The feed URL must use HTTPS")
     request = urllib.request.Request(
         url,
         headers={"User-Agent": "omarchy-edge-packages-widget/1.0", "Accept": "application/rss+xml, application/xml, text/xml"},
     )
     with urllib.request.urlopen(request, timeout=20) as response:
         if response.status != 200:
-            raise RuntimeError(f"Il feed ha risposto HTTP {response.status}")
+            raise RuntimeError(f"The feed returned HTTP {response.status}")
         payload = response.read(MAX_FEED_BYTES + 1)
     if len(payload) > MAX_FEED_BYTES:
-        raise RuntimeError("Il feed RSS supera la dimensione massima consentita")
+        raise RuntimeError("The RSS feed exceeds the maximum allowed size")
 
     root = ET.fromstring(payload)
     channel = root.find("channel")
     if channel is None:
-        raise ValueError("Il documento ricevuto non è un feed RSS valido")
+        raise ValueError("The response is not a valid RSS feed")
 
     entries = []
     for item in channel.findall("item"):
@@ -57,7 +57,7 @@ def read_feed(url: str, limit: int) -> dict[str, object]:
         )
 
     return {
-        "title": channel.findtext("title", default="Pacchetti Omarchy edge"),
+        "title": channel.findtext("title", default="Omarchy Edge Packages"),
         "items": entries[:limit],
         "total": len(entries),
         "checked": int(time.time()),
@@ -67,12 +67,12 @@ def read_feed(url: str, limit: int) -> dict[str, object]:
 
 def main() -> None:
     if len(sys.argv) != 3:
-        print(json.dumps({"items": [], "total": 0, "error": "Parametri mancanti"}))
+        print(json.dumps({"items": [], "total": 0, "error": "Missing arguments"}))
         return
     try:
         limit = int(sys.argv[2])
         if limit not in ALLOWED_LIMITS:
-            raise ValueError("Selezione non valida: usare 10, 50 o 100")
+            raise ValueError("Invalid selection: choose 10, 50, or 100")
         result = read_feed(sys.argv[1], limit)
     except Exception as exc:  # Emit an error state for the panel, never a traceback.
         result = {"items": [], "total": 0, "checked": int(time.time()), "error": str(exc)}

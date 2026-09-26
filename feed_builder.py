@@ -30,10 +30,10 @@ REPOSITORIES = {
     "omarchy": "https://pkgs.omarchy.org/edge/x86_64/omarchy.db",
 }
 FEED_URL = "https://neuromante.github.io/omarchy-edge-packages/feed.xml"
-FEED_TITLE = "Pacchetti in arrivo su Omarchy edge"
+FEED_TITLE = "Packages arriving in Omarchy edge"
 FEED_DESCRIPTION = (
-    "Nuovi pacchetti e aggiornamenti rilevati nei repository core, extra, "
-    "multilib e omarchy del canale Omarchy edge."
+    "New packages and version updates detected in Omarchy edge's core, extra, "
+    "multilib, and omarchy repositories."
 )
 MAX_ITEMS = 100
 
@@ -101,7 +101,7 @@ def fetch_repository(repo: str, url: str) -> dict[str, dict[str, str]]:
                 }
 
     if not packages:
-        raise RuntimeError(f"Il database {repo} è vuoto o non è stato interpretato correttamente")
+        raise RuntimeError(f"The {repo} database is empty or could not be parsed")
     return packages
 
 
@@ -187,22 +187,22 @@ def render_rss(events: list[dict[str, str]]) -> bytes:
     ET.SubElement(channel, "title").text = FEED_TITLE
     ET.SubElement(channel, "link").text = FEED_URL
     ET.SubElement(channel, "description").text = FEED_DESCRIPTION
-    ET.SubElement(channel, "language").text = "it-IT"
+    ET.SubElement(channel, "language").text = "en-US"
     ET.SubElement(channel, "ttl").text = "60"
 
     for event in events[:MAX_ITEMS]:
         item = ET.SubElement(channel, "item")
         if event["kind"] == "added":
-            title = f'[{event["repo"]}] Nuovo: {event["name"]} {event["version"]}'
-            change = f'Nuovo pacchetto, versione {event["version"]}.'
+            title = f'[{event["repo"]}] New: {event["name"]} {event["version"]}'
+            change = f'New package, version {event["version"]}.'
         else:
             title = (
                 f'[{event["repo"]}] {event["name"]}: '
                 f'{event["old_version"]} → {event["version"]}'
             )
             change = (
-                f'Aggiornamento da {event["old_version"]} '
-                f'a {event["version"]}.'
+                f'Updated from {event["old_version"]} '
+                f'to {event["version"]}.'
             )
         ET.SubElement(item, "title").text = title
         ET.SubElement(item, "description").text = " ".join(
@@ -226,13 +226,13 @@ def run(state_path: Path, events_path: Path, feed_path: Path) -> tuple[int, bool
     if not first_run:
         previous = json.loads(state_path.read_text(encoding="utf-8"))
         if not isinstance(previous, dict):
-            raise ValueError("Lo snapshot dei pacchetti non è un oggetto JSON")
+            raise ValueError("Package snapshot must be a JSON object")
 
     event_history: list[dict[str, str]] = []
     if events_path.exists():
         loaded_events = json.loads(events_path.read_text(encoding="utf-8"))
         if not isinstance(loaded_events, list):
-            raise ValueError("Lo storico RSS non è una lista JSON")
+            raise ValueError("RSS event history must be a JSON list")
         event_history = loaded_events
 
     new_events = [] if first_run else build_events(previous, current, utc_now())

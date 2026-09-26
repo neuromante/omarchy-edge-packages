@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "neuromante.omarchy-edge-packages",
-  "name": "Omarchy edge packages",
+  "name": "Omarchy Edge Packages",
   "version": "1.0.0",
   "author": "neuromante",
-  "description": "Feed RSS degli ultimi pacchetti nuovi o aggiornati nei repository edge di Omarchy",
+  "description": "RSS feed of new and updated packages in Omarchy edge repositories",
   "kinds": [
     "bar-widget"
   ],
@@ -12,8 +12,8 @@
     "barWidget": "BarWidget.qml"
   },
   "barWidget": {
-    "displayName": "Pacchetti Omarchy edge",
-    "description": "Novità dai repository core, extra, multilib e omarchy del canale edge",
+    "displayName": "Omarchy Edge Packages",
+    "description": "New and updated packages from the core, extra, multilib, and omarchy edge repositories",
     "category": "System",
     "allowMultiple": false,
     "defaultSection": "right",
@@ -26,16 +26,16 @@
       {
         "key": "itemLimit",
         "type": "enum",
-        "label": "Pacchetti da mostrare",
-        "description": "Numero massimo di eventi recenti mostrati nel pannello.",
+        "label": "Packages to show",
+        "description": "Maximum number of recent feed entries shown in the panel.",
         "options": ["10", "50", "100"],
         "defaultValue": "50"
       },
       {
         "key": "refreshIntervalMinutes",
         "type": "integer",
-        "label": "Intervallo di aggiornamento (minuti)",
-        "description": "Ogni quanto rileggere il feed RSS.",
+        "label": "Refresh interval (minutes)",
+        "description": "How often to fetch the RSS feed.",
         "min": 15,
         "max": 360,
         "step": 15,
@@ -44,7 +44,7 @@
       {
         "key": "feedUrl",
         "type": "string",
-        "label": "URL del feed RSS",
+        "label": "RSS feed URL",
         "defaultValue": "https://neuromante.github.io/omarchy-edge-packages/feed.xml"
       }
     ]

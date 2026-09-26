@@ -79,12 +79,12 @@ Panel {
           PanelHero {
             width: parent.width
             iconComponent: rssIcon
-            title: "Novità Omarchy edge"
+            title: "Omarchy edge updates"
             meta: root.error !== ""
               ? root.error
               : (root.checking
-                ? "Lettura del feed RSS…"
-                : root.totalCount + (root.totalCount === 1 ? " evento recente" : " eventi recenti"))
+                ? "Loading RSS feed…"
+                : root.totalCount + (root.totalCount === 1 ? " recent event" : " recent events"))
             foreground: root.fg
             fontFamily: root.family
           }
@@ -93,7 +93,7 @@ Panel {
             width: parent.width
             spacing: Style.space(8)
             Text {
-              text: "Mostra"
+              text: "Show"
               color: root.dim
               font.family: root.family
               font.pixelSize: Style.font.bodySmall
@@ -126,7 +126,7 @@ Panel {
             }
             Item { width: 1; height: 1 }
             Text {
-              text: "r · aggiorna"
+              text: "r · refresh"
               color: root.dim
               font.family: root.family
               font.pixelSize: Style.font.caption
@@ -151,7 +151,7 @@ Panel {
             wrapMode: Text.WordWrap
             text: root.error !== ""
               ? root.error
-              : (root.checking ? "Connessione al feed…" : "Nessun nuovo pacchetto o aggiornamento nel feed.")
+              : (root.checking ? "Connecting to the feed…" : "No new packages or updates in the feed.")
             color: root.dim
             font.family: root.family
             font.pixelSize: Style.font.bodySmall

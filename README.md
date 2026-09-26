@@ -1,32 +1,30 @@
-# Omarchy edge packages — RSS and Quickshell widget
+# Omarchy Edge Packages — RSS Feed and Quickshell Widget
 
-Feed pubblico dei pacchetti nuovi o aggiornati in `core`, `extra`, `multilib` e `omarchy` (edge), più un widget Quickshell per Omarchy.
+**Version 1.0.0** · Public RSS feed of new and updated packages in Omarchy's `core`, `extra`, `multilib`, and `omarchy` edge repositories, with a Quickshell widget for the Omarchy bar.
 
-## Feed
+## RSS feed
 
-Una GitHub Action controlla ogni ora i database pacman pubblici e conserva lo snapshot di nomi e versioni nella cache remota di GitHub Actions. Alla prima esecuzione crea la baseline senza segnalare come nuovi i pacchetti che sono già presenti; i successivi inserimenti e cambi di versione diventano voci RSS. Lo storico pubblicato conserva gli ultimi 100 eventi.
+GitHub Actions checks the public pacman databases hourly and keeps the package-name and version snapshot in GitHub Actions' remote cache. The first run establishes a baseline without reporting existing packages as new. Packages added later and version changes become RSS items. The feed retains the latest 100 events.
 
-Il feed viene pubblicato su GitHub Pages all'indirizzo:
+Feed URL: <https://neuromante.github.io/omarchy-edge-packages/feed.xml>
 
-`https://neuromante.github.io/omarchy-edge-packages/feed.xml`
+Checks and processing run on GitHub-hosted runners. The widget only fetches the RSS response over HTTPS; it does not download pacman databases or save the package list locally.
 
-Il controllo e l'elaborazione avvengono sui runner GitHub. Sul PC che usa il widget viene richiesta soltanto la risposta RSS, senza scaricare i database pacman e senza salvare la lista localmente.
+## Omarchy widget
 
-## Widget Omarchy
-
-Il repository è direttamente installabile come plugin Omarchy. La barra mostra un'icona RSS con il numero di eventi recenti; cliccandola si apre l'elenco. Nel pannello si può scegliere se mostrare gli ultimi 10, 50 o 100 eventi.
-
-Installazione dopo la pubblicazione del repository:
+The repository can be installed directly as an Omarchy plugin. Its bar icon shows the number of recent feed entries; click it to open the list. The panel lets you choose the latest **10, 50, or 100** entries.
 
 ```bash
 omarchy plugin add https://github.com/neuromante/omarchy-edge-packages --enable
 ```
 
-## Sviluppo e test
+The default feed refresh interval is one hour. The item limit, refresh interval, and feed URL can be changed in the plugin settings.
+
+## Development and tests
 
 ```bash
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests
 ```
 
-La pubblicazione automatica richiede `pages: write` e `id-token: write`, già dichiarate nel workflow. La prima esecuzione crea la baseline remota e pubblica il feed vuoto; da quel momento registra i nuovi arrivi e gli aggiornamenti. Lo snapshot non viene committato nel repository.
+The publishing workflow requires `pages: write` and `id-token: write`, declared in the workflow. Its package snapshot and event history are kept in GitHub Actions cache, not committed to the repository. See [CHANGELOG.md](CHANGELOG.md) for the initial release notes.
