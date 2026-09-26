@@ -65,7 +65,7 @@ def parse_desc(raw: bytes) -> dict[str, str]:
 def fetch_repository(repo: str, url: str) -> dict[str, dict[str, str]]:
     request = urllib.request.Request(
         url,
-        headers={"User-Agent": "omarchy-edge-rss/1.0 (+https://github.com/neuromante/omarchy-edge-packages)"},
+        headers={"User-Agent": "omarchy-edge-rss/1.2.0 (+https://github.com/neuromante/omarchy-edge-packages)"},
     )
     with urllib.request.urlopen(request, timeout=90) as response:
         archive = response.read()

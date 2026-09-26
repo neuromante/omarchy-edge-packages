@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [1.2.0] — 2026-09-26
 
 - Increase repository polling and the widget's default refresh interval from 60 to 15 minutes.
 - Restyle the 10/50/100 selector as rounded gray and white pills for clearer selection.
