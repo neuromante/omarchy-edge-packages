@@ -18,7 +18,17 @@ The repository can be installed directly as an Omarchy plugin. Its bar icon show
 omarchy plugin add https://github.com/neuromante/omarchy-edge-packages --enable
 ```
 
-The default feed refresh interval is 15 minutes. The item limit, refresh interval, and feed URL can be changed in the plugin settings.
+The item limit can be changed in the widget panel. The refresh interval and feed URL are per-widget bar settings; set them from a terminal with `omarchy bar set`:
+
+```bash
+# Set the refresh interval in minutes (15–360; --json stores it as a number)
+omarchy bar set neuromante.omarchy-edge-packages refreshIntervalMinutes 30 --json
+
+# Use a different RSS endpoint
+omarchy bar set neuromante.omarchy-edge-packages feedUrl https://example.org/packages.xml
+```
+
+The default refresh interval is 15 minutes. These two options do not currently have controls in the widget panel.
 
 ## Development and tests
 
