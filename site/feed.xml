@@ -1,2 +1,2 @@
 <?xml version='1.0' encoding='utf-8'?>
-<rss version="2.0"><channel><title>Packages arriving in Omarchy edge</title><link>https://neuromante.github.io/omarchy-edge-packages/feed.xml</link><description>New packages and version updates detected in Omarchy edge's core, extra, multilib, and omarchy repositories.</description><language>en-US</language><ttl>60</ttl></channel></rss>
+<rss version="2.0"><channel><title>Packages arriving in Omarchy edge</title><link>https://neuromante.github.io/omarchy-edge-packages/feed.xml</link><description>New packages and version updates detected in Omarchy edge's core, extra, multilib, and omarchy repositories.</description><language>en-US</language><ttl>15</ttl></channel></rss>

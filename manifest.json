@@ -19,7 +19,7 @@
     "defaultSection": "right",
     "defaults": {
       "itemLimit": "50",
-      "refreshIntervalMinutes": 60,
+      "refreshIntervalMinutes": 15,
       "feedUrl": "https://neuromante.github.io/omarchy-edge-packages/feed.xml"
     },
     "schema": [
@@ -39,7 +39,7 @@
         "min": 15,
         "max": 360,
         "step": 15,
-        "defaultValue": 60
+        "defaultValue": 15
       },
       {
         "key": "feedUrl",

@@ -122,6 +122,7 @@ class RenderTests(unittest.TestCase):
         root = ET.fromstring(feed_builder.render_rss(events))
         items = root.findall("./channel/item")
         self.assertEqual(len(items), 100)
+        self.assertEqual(root.findtext("./channel/ttl"), "15")
         self.assertIn("A & B", items[0].findtext("description", ""))
 
 

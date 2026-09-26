@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Increase repository polling and the widget's default refresh interval from 60 to 15 minutes.
+
 ## [1.0.0] — 2026-09-26
 
 Initial public release.

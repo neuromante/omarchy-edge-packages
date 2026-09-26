@@ -15,8 +15,8 @@ BarWidget {
     return [10, 50, 100].indexOf(n) >= 0 ? n : 50
   }
   readonly property int refreshIntervalMs: {
-    var minutes = Math.round(Number(setting("refreshIntervalMinutes", 60)))
-    if (!isFinite(minutes) || minutes < 15) minutes = 60
+    var minutes = Math.round(Number(setting("refreshIntervalMinutes", 15)))
+    if (!isFinite(minutes) || minutes < 15) minutes = 15
     if (minutes > 360) minutes = 360
     return minutes * 60000
   }

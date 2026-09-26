@@ -188,7 +188,7 @@ def render_rss(events: list[dict[str, str]]) -> bytes:
     ET.SubElement(channel, "link").text = FEED_URL
     ET.SubElement(channel, "description").text = FEED_DESCRIPTION
     ET.SubElement(channel, "language").text = "en-US"
-    ET.SubElement(channel, "ttl").text = "60"
+    ET.SubElement(channel, "ttl").text = "15"
 
     for event in events[:MAX_ITEMS]:
         item = ET.SubElement(channel, "item")

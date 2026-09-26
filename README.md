@@ -4,7 +4,7 @@
 
 ## RSS feed
 
-GitHub Actions checks the public pacman databases hourly and keeps the package-name and version snapshot in GitHub Actions' remote cache. The first run establishes a baseline without reporting existing packages as new. Packages added later and version changes become RSS items. The feed retains the latest 100 events.
+GitHub Actions checks the public pacman databases every 15 minutes and keeps the package-name and version snapshot in GitHub Actions' remote cache. The first run establishes a baseline without reporting existing packages as new. Packages added later and version changes become RSS items. The feed retains the latest 100 events.
 
 Feed URL: <https://neuromante.github.io/omarchy-edge-packages/feed.xml>
 
@@ -18,7 +18,7 @@ The repository can be installed directly as an Omarchy plugin. Its bar icon show
 omarchy plugin add https://github.com/neuromante/omarchy-edge-packages --enable
 ```
 
-The default feed refresh interval is one hour. The item limit, refresh interval, and feed URL can be changed in the plugin settings.
+The default feed refresh interval is 15 minutes. The item limit, refresh interval, and feed URL can be changed in the plugin settings.
 
 ## Development and tests
 
