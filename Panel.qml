@@ -103,19 +103,21 @@ Panel {
               model: [10, 50, 100]
               delegate: Rectangle {
                 required property int modelData
-                implicitWidth: limitText.implicitWidth + Style.space(18)
+                readonly property bool selected: root.itemLimit === modelData
+                implicitWidth: limitText.implicitWidth + Style.space(24)
                 implicitHeight: Style.space(30)
-                radius: Style.space(7)
-                color: root.itemLimit === modelData ? root.accent : Qt.darker(root.fg, 2.2)
-                opacity: root.itemLimit === modelData ? 1 : 0.75
+                radius: height / 2
+                color: selected ? "#ffffff" : "#b8bec7"
+                border.width: Style.spacing.hairline
+                border.color: selected ? Qt.darker(root.fg, 1.4) : "#747b85"
                 Text {
                   id: limitText
                   anchors.centerIn: parent
                   text: String(parent.modelData)
-                  color: root.itemLimit === parent.modelData ? Color.background : root.fg
+                  color: "#202124"
                   font.family: root.family
                   font.pixelSize: Style.font.bodySmall
-                  font.bold: root.itemLimit === parent.modelData
+                  font.bold: parent.selected
                 }
                 MouseArea {
                   anchors.fill: parent
