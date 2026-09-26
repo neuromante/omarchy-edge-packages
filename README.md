@@ -4,7 +4,7 @@ Feed pubblico dei pacchetti nuovi o aggiornati in `core`, `extra`, `multilib` e 
 
 ## Feed
 
-Una GitHub Action controlla ogni ora i database pacman pubblici e conserva online uno snapshot di nomi e versioni. Alla prima esecuzione crea la baseline senza segnalare come nuovi i pacchetti che sono già presenti; i successivi inserimenti e cambi di versione diventano voci RSS. Lo storico pubblicato conserva gli ultimi 100 eventi.
+Una GitHub Action controlla ogni ora i database pacman pubblici e conserva lo snapshot di nomi e versioni nella cache remota di GitHub Actions. Alla prima esecuzione crea la baseline senza segnalare come nuovi i pacchetti che sono già presenti; i successivi inserimenti e cambi di versione diventano voci RSS. Lo storico pubblicato conserva gli ultimi 100 eventi.
 
 Il feed viene pubblicato su GitHub Pages all'indirizzo:
 
@@ -29,4 +29,4 @@ python -m pip install -r requirements.txt
 python -m unittest discover -s tests
 ```
 
-La pubblicazione automatica richiede le autorizzazioni `contents: write`, `pages: write` e `id-token: write`, già dichiarate nel workflow. La prima esecuzione programmata crea lo snapshot iniziale e pubblica il feed vuoto; da quel momento registra i nuovi arrivi e gli aggiornamenti.
+La pubblicazione automatica richiede `pages: write` e `id-token: write`, già dichiarate nel workflow. La prima esecuzione crea la baseline remota e pubblica il feed vuoto; da quel momento registra i nuovi arrivi e gli aggiornamenti. Lo snapshot non viene committato nel repository.
