@@ -190,28 +190,18 @@ BarWidget {
     return lines.join("\n")
   }
 
-  Rectangle {
+  Text {
     visible: root.totalCount > 0
     anchors.top: button.top
     anchors.right: button.right
+    anchors.topMargin: Style.space(2)
+    anchors.rightMargin: Style.space(2)
     z: 10
-    readonly property string countText: root.totalCount > 99 ? "99+" : String(root.totalCount)
-    implicitWidth: Math.max(Style.space(12), badgeLabel.implicitWidth + Style.space(5))
-    implicitHeight: Style.space(12)
-    radius: height / 2
+    text: root.totalCount > 99 ? "99+" : String(root.totalCount)
     color: Color.accent
-    border.width: 1
-    border.color: root.bar ? root.bar.background : "transparent"
-
-    Text {
-      id: badgeLabel
-      anchors.centerIn: parent
-      text: parent.countText
-      color: Color.background
-      font.family: root.bar ? root.bar.fontFamily : Style.font.family
-      font.pixelSize: Style.font.caption * 0.72
-      font.bold: true
-    }
+    font.family: root.bar ? root.bar.fontFamily : Style.font.family
+    font.pixelSize: Style.font.caption * 0.8
+    font.bold: true
   }
 
   Timer {
