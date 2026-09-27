@@ -101,24 +101,31 @@ Panel {
             }
             Repeater {
               model: [10, 50, 100]
-              delegate: Rectangle {
+              delegate: Item {
                 required property int modelData
                 readonly property bool selected: root.itemLimit === modelData
-                implicitWidth: limitText.implicitWidth + Style.space(24)
+                implicitWidth: limitText.implicitWidth + Style.space(8)
                 implicitHeight: Style.space(30)
-                radius: height / 2
-                color: selected ? "#ffffff" : "#b8bec7"
-                border.width: Style.spacing.hairline
-                border.color: selected ? Qt.darker(root.fg, 1.4) : "#747b85"
+
                 Text {
                   id: limitText
                   anchors.centerIn: parent
                   text: String(parent.modelData)
-                  color: "#202124"
+                  color: parent.selected ? root.accent : root.dim
                   font.family: root.family
                   font.pixelSize: Style.font.bodySmall
                   font.bold: parent.selected
                 }
+
+                Rectangle {
+                  visible: parent.selected
+                  width: Style.space(12)
+                  height: Style.spacing.hairline
+                  anchors.horizontalCenter: parent.horizontalCenter
+                  anchors.bottom: parent.bottom
+                  color: root.accent
+                }
+
                 MouseArea {
                   anchors.fill: parent
                   cursorShape: Qt.PointingHandCursor

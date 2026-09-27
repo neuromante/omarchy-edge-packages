@@ -29,11 +29,14 @@ BarWidget {
   property string error: ""
   property real lastChecked: 0
   property bool pending: false
+  property bool blinkDimmed: false
   property var panelItem: null
 
   readonly property bool opened: panelItem ? panelItem.opened === true : false
   readonly property bool popoutSwitchClosing: panelItem ? panelItem.popoutSwitchClosing === true : false
   readonly property bool hasItems: totalCount > 0
+
+  onHasItemsChanged: blinkDimmed = false
 
   function open() { if (panelItem && panelItem.openFromHotkey) panelItem.openFromHotkey() }
   function close() { if (panelItem && panelItem.close) panelItem.close() }
@@ -171,7 +174,8 @@ BarWidget {
     bar: root.bar
     text: "\uf09e"
     active: root.hasItems
-    activeColor: Color.accent
+    activeColor: Color.urgent
+    opacity: root.hasItems && root.blinkDimmed ? 0.35 : 1.0
     tooltipText: root.tooltipText
     onPressed: function(b) {
       if (b === Qt.LeftButton) root.togglePanel()
@@ -190,18 +194,11 @@ BarWidget {
     return lines.join("\n")
   }
 
-  Text {
-    visible: root.totalCount > 0
-    anchors.top: button.top
-    anchors.right: button.right
-    anchors.topMargin: Style.space(2)
-    anchors.rightMargin: Style.space(2)
-    z: 10
-    text: root.totalCount > 99 ? "99+" : String(root.totalCount)
-    color: Color.accent
-    font.family: root.bar ? root.bar.fontFamily : Style.font.family
-    font.pixelSize: Style.font.caption * 0.8
-    font.bold: true
+  Timer {
+    interval: 500
+    running: root.hasItems
+    repeat: true
+    onTriggered: root.blinkDimmed = !root.blinkDimmed
   }
 
   Timer {

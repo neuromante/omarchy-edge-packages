@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.4.0] — 2026-09-27
+
+- Remove the unread count from the bar icon and flash the icon red while unread updates are available.
+- Replace the rounded item-limit pills with flat text selectors.
+
 ## [1.3.0] — 2026-09-27
 
 - Add a persistent “Mark all read” action to the widget; the badge and list now show only unread feed entries.
