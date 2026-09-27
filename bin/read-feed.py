@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 import time
@@ -19,7 +20,7 @@ def read_feed(url: str, limit: int) -> dict[str, object]:
         raise ValueError("The feed URL must use HTTPS")
     request = urllib.request.Request(
         url,
-        headers={"User-Agent": "omarchy-edge-packages-widget/1.2.0", "Accept": "application/rss+xml, application/xml, text/xml"},
+        headers={"User-Agent": "omarchy-edge-packages-widget/1.3.0", "Accept": "application/rss+xml, application/xml, text/xml"},
     )
     with urllib.request.urlopen(request, timeout=20) as response:
         if response.status != 200:
@@ -39,12 +40,20 @@ def read_feed(url: str, limit: int) -> dict[str, object]:
             (category.text or "").strip()
             for category in item.findall("category")
         ]
+        title = item.findtext("title", default="Pacchetto edge")
+        pub_date = item.findtext("pubDate", default="")
+        link = item.findtext("link", default="")
+        guid = item.findtext("guid", default="").strip()
+        if not guid:
+            identity = "\0".join((title, pub_date, link))
+            guid = hashlib.sha256(identity.encode("utf-8")).hexdigest()
         entries.append(
             {
-                "title": item.findtext("title", default="Pacchetto edge"),
+                "id": guid,
+                "title": title,
                 "description": item.findtext("description", default=""),
-                "pubDate": item.findtext("pubDate", default=""),
-                "link": item.findtext("link", default=""),
+                "pubDate": pub_date,
+                "link": link,
                 "repo": next(
                     (category for category in categories if category in {"core", "extra", "multilib", "omarchy"}),
                     "",
@@ -59,6 +68,7 @@ def read_feed(url: str, limit: int) -> dict[str, object]:
     return {
         "title": channel.findtext("title", default="Omarchy Edge Packages"),
         "items": entries[:limit],
+        "allItems": entries,
         "total": len(entries),
         "checked": int(time.time()),
         "error": "",

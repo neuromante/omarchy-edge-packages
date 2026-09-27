@@ -84,7 +84,7 @@ Panel {
               ? root.error
               : (root.checking
                 ? "Loading RSS feed…"
-                : root.totalCount + (root.totalCount === 1 ? " recent event" : " recent events"))
+                : root.totalCount + (root.totalCount === 1 ? " unread update" : " unread updates"))
             foreground: root.fg
             fontFamily: root.family
           }
@@ -126,7 +126,35 @@ Panel {
                 }
               }
             }
-            Item { width: 1; height: 1 }
+            Rectangle {
+              implicitWidth: markReadText.implicitWidth + Style.space(24)
+              implicitHeight: Style.space(30)
+              radius: height / 2
+              color: root.totalCount > 0 ? "#ffffff" : "#b8bec7"
+              border.width: Style.spacing.hairline
+              border.color: root.totalCount > 0 ? Qt.darker(root.fg, 1.4) : "#747b85"
+              opacity: root.totalCount > 0 ? 1 : 0.55
+
+              Text {
+                id: markReadText
+                anchors.centerIn: parent
+                text: "Mark all read"
+                color: "#202124"
+                font.family: root.family
+                font.pixelSize: Style.font.bodySmall
+                font.bold: true
+              }
+
+              MouseArea {
+                anchors.fill: parent
+                enabled: root.totalCount > 0
+                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+                onClicked: {
+                  if (root.hostWidget && root.hostWidget.markAllRead)
+                    root.hostWidget.markAllRead()
+                }
+              }
+            }
             Text {
               text: "r · refresh"
               color: root.dim
@@ -153,7 +181,7 @@ Panel {
             wrapMode: Text.WordWrap
             text: root.error !== ""
               ? root.error
-              : (root.checking ? "Connecting to the feed…" : "No new packages or updates in the feed.")
+              : (root.checking ? "Connecting to the feed…" : "No unread updates in the feed.")
             color: root.dim
             font.family: root.family
             font.pixelSize: Style.font.bodySmall

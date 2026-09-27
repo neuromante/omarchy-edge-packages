@@ -24,6 +24,8 @@ BarWidget {
   property bool checking: false
   property int totalCount: 0
   property var items: []
+  property var feedItems: []
+  property var readIds: []
   property string error: ""
   property real lastChecked: 0
   property bool pending: false
@@ -49,9 +51,52 @@ BarWidget {
   }
 
   onBarChanged: injectPanel()
-  onSettingsChanged: injectPanel()
-  onItemLimitChanged: refresh()
+  onSettingsChanged: {
+    injectPanel()
+    loadReadIds()
+  }
+  onItemLimitChanged: {
+    updateUnread()
+    refresh()
+  }
   onFeedUrlChanged: refresh()
+
+  function loadReadIds() {
+    var saved = String(setting("readItemIds", "[]"))
+    try {
+      var parsed = JSON.parse(saved)
+      readIds = Array.isArray(parsed) ? parsed : []
+    } catch (e) {
+      readIds = []
+    }
+    updateUnread()
+  }
+
+  function eventId(item) {
+    return String(item.id || [item.title || "", item.pubDate || "", item.link || ""].join("|"))
+  }
+
+  function updateUnread() {
+    var seen = {}
+    for (var i = 0; i < readIds.length; i++) seen[String(readIds[i])] = true
+    var unread = []
+    for (var j = 0; j < feedItems.length; j++) {
+      if (!seen[eventId(feedItems[j])]) unread.push(feedItems[j])
+    }
+    totalCount = unread.length
+    items = unread.slice(0, itemLimit)
+  }
+
+  function markAllRead() {
+    if (feedItems.length === 0) return
+    var ids = {}
+    for (var i = 0; i < readIds.length; i++) ids[String(readIds[i])] = true
+    for (var j = 0; j < feedItems.length; j++) ids[eventId(feedItems[j])] = true
+    var saved = Object.keys(ids).slice(-500)
+    readIds = saved
+    updateSetting("readItemIds", JSON.stringify(saved))
+    updateUnread()
+  }
 
   function updateSetting(key, value) {
     var entry = { id: root.moduleName }
@@ -88,8 +133,10 @@ BarWidget {
       checking = false
       return
     }
-    items = Array.isArray(result.items) ? result.items : []
-    totalCount = Math.max(0, Math.round(Number(result.total) || 0))
+    feedItems = Array.isArray(result.allItems)
+      ? result.allItems
+      : (Array.isArray(result.items) ? result.items : [])
+    updateUnread()
     error = String(result.error || "")
     lastChecked = Number(result.checked) || 0
     checking = false
@@ -136,7 +183,7 @@ BarWidget {
     if (root.error !== "") return "Omarchy edge RSS: " + root.error
     if (root.checking && root.items.length === 0) return "Loading Omarchy edge updates…"
     if (!root.hasItems) return "No recent Omarchy edge updates"
-    var lines = [root.totalCount + " recent Omarchy edge events"]
+    var lines = [root.totalCount + " unread Omarchy edge updates"]
     for (var i = 0; i < Math.min(root.items.length, 10); i++)
       lines.push(root.items[i].title)
     if (root.totalCount > root.items.length) lines.push("…")
@@ -181,7 +228,10 @@ BarWidget {
     onTriggered: root.refresh()
   }
 
-  Component.onCompleted: initialTimer.start()
+  Component.onCompleted: {
+    root.loadReadIds()
+    initialTimer.start()
+  }
 
   Process {
     id: proc
