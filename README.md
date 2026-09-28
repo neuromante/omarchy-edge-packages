@@ -1,6 +1,6 @@
 # Omarchy Edge Packages — RSS Feed and Quickshell Widget
 
-**Version 1.4.0** · Public RSS feed of new and updated packages in Omarchy's `core`, `extra`, `multilib`, and `omarchy` edge repositories, with a Quickshell widget for the Omarchy bar.
+**Version 1.5.0** · Public RSS feed of new and updated packages in Omarchy's `core`, `extra`, `multilib`, and `omarchy` edge repositories, with a Quickshell widget for the Omarchy bar.
 
 ## RSS feed
 
@@ -12,7 +12,7 @@ Checks and processing run on GitHub-hosted runners. The widget only fetches the 
 
 ## Omarchy widget
 
-The repository can be installed directly as an Omarchy plugin. Its bar icon flashes red when unread feed entries are available; click it to open the list. Use **Mark all read** to clear the current updates; future feed entries will appear as unread. The panel lets you choose the latest **10, 50, or 100** unread entries.
+The repository can be installed directly as an Omarchy plugin. Its bar icon flashes red when unread feed entries are available; click it to open the list. Use **Mark all read** to clear the current updates; future feed entries will appear as unread. The panel lets you choose the latest **10, 50, or 100** unread entries, search their text, and jump back to the top of long lists.
 
 ```bash
 omarchy plugin add https://github.com/neuromante/omarchy-edge-packages --enable

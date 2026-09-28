@@ -20,7 +20,7 @@ def read_feed(url: str, limit: int) -> dict[str, object]:
         raise ValueError("The feed URL must use HTTPS")
     request = urllib.request.Request(
         url,
-        headers={"User-Agent": "omarchy-edge-packages-widget/1.4.0", "Accept": "application/rss+xml, application/xml, text/xml"},
+        headers={"User-Agent": "omarchy-edge-packages-widget/1.5.0", "Accept": "application/rss+xml, application/xml, text/xml"},
     )
     with urllib.request.urlopen(request, timeout=20) as response:
         if response.status != 200:

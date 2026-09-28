@@ -17,10 +17,29 @@ Panel {
   readonly property color accent: Color.accent
   readonly property string family: barObj ? barObj.fontFamily : Style.font.family
   readonly property var items: hostWidget ? hostWidget.items : []
+  readonly property var allFeedItems: hostWidget ? hostWidget.feedItems : []
+  property string searchText: ""
+  readonly property var filteredItems: {
+    var query = String(searchText || "").trim().toLowerCase()
+    var source = query.length > 0 ? allFeedItems : items
+    if (query.length === 0) return source
+    var matches = []
+    for (var i = 0; i < source.length; i++) {
+      var item = source[i] || {}
+      var text = [item.title || "", item.description || "", item.repo || "", item.kind || "", item.pubDate || ""]
+        .join(" ").toLowerCase()
+      if (text.indexOf(query) >= 0) matches.push(item)
+    }
+    return matches
+  }
+  readonly property var visibleItems: filteredItems.slice(0, itemLimit)
   readonly property int totalCount: hostWidget ? hostWidget.totalCount : 0
   readonly property int itemLimit: hostWidget ? hostWidget.itemLimit : 50
   readonly property bool checking: hostWidget ? hostWidget.checking : false
   readonly property string error: hostWidget ? hostWidget.error : ""
+
+  onSearchTextChanged: flick.contentY = 0
+  onItemLimitChanged: flick.contentY = 0
 
   function open() {
     root.controller.show()
@@ -84,7 +103,9 @@ Panel {
               ? root.error
               : (root.checking
                 ? "Loading RSS feed…"
-                : root.totalCount + (root.totalCount === 1 ? " unread update" : " unread updates"))
+                : (root.searchText.trim() !== ""
+                  ? root.filteredItems.length + (root.filteredItems.length === 1 ? " match" : " matches")
+                  : root.totalCount + (root.totalCount === 1 ? " unread update" : " unread updates")))
             foreground: root.fg
             fontFamily: root.family
           }
@@ -133,23 +154,18 @@ Panel {
                 }
               }
             }
-            Rectangle {
-              implicitWidth: markReadText.implicitWidth + Style.space(24)
+            Item {
+              implicitWidth: markReadText.implicitWidth + Style.space(8)
               implicitHeight: Style.space(30)
-              radius: height / 2
-              color: root.totalCount > 0 ? "#ffffff" : "#b8bec7"
-              border.width: Style.spacing.hairline
-              border.color: root.totalCount > 0 ? Qt.darker(root.fg, 1.4) : "#747b85"
-              opacity: root.totalCount > 0 ? 1 : 0.55
 
               Text {
                 id: markReadText
                 anchors.centerIn: parent
                 text: "Mark all read"
-                color: "#202124"
+                color: root.totalCount > 0 ? root.accent : root.dim
                 font.family: root.family
                 font.pixelSize: Style.font.bodySmall
-                font.bold: true
+                font.bold: root.totalCount > 0
               }
 
               MouseArea {
@@ -173,13 +189,69 @@ Panel {
 
           Rectangle {
             width: parent.width
+            height: Style.space(36)
+            radius: Style.space(6)
+            color: root.barObj ? Qt.darker(root.barObj.background, 1.08) : Color.background
+            border.width: Style.spacing.hairline
+            border.color: Qt.darker(root.fg, 1.5)
+
+            TextInput {
+              id: searchInput
+              anchors.left: parent.left
+              anchors.right: clearSearch.left
+              anchors.leftMargin: Style.space(10)
+              anchors.rightMargin: Style.space(4)
+              anchors.verticalCenter: parent.verticalCenter
+              height: parent.height - Style.space(6)
+              verticalAlignment: TextInput.AlignVCenter
+              text: root.searchText
+              color: root.fg
+              font.family: root.family
+              font.pixelSize: Style.font.bodySmall
+              selectByMouse: true
+              onTextChanged: root.searchText = text
+            }
+
+            Text {
+              visible: searchInput.text.length === 0
+              anchors.left: parent.left
+              anchors.leftMargin: Style.space(10)
+              anchors.verticalCenter: parent.verticalCenter
+              text: "Search the feed…"
+              color: root.dim
+              font.family: root.family
+              font.pixelSize: Style.font.bodySmall
+            }
+
+            Text {
+              id: clearSearch
+              visible: searchInput.text.length > 0
+              anchors.right: parent.right
+              anchors.rightMargin: Style.space(10)
+              anchors.verticalCenter: parent.verticalCenter
+              text: "×"
+              color: root.dim
+              font.family: root.family
+              font.pixelSize: Style.font.body
+
+              MouseArea {
+                anchors.fill: parent
+                anchors.margins: -Style.space(5)
+                cursorShape: Qt.PointingHandCursor
+                onClicked: searchInput.clear()
+              }
+            }
+          }
+
+          Rectangle {
+            width: parent.width
             height: Style.spacing.hairline
             color: root.fg
             opacity: 0.12
           }
 
           Text {
-            visible: root.items.length === 0
+            visible: root.visibleItems.length === 0
             width: parent.width
             topPadding: Style.space(8)
             bottomPadding: Style.space(8)
@@ -188,7 +260,11 @@ Panel {
             wrapMode: Text.WordWrap
             text: root.error !== ""
               ? root.error
-              : (root.checking ? "Connecting to the feed…" : "No unread updates in the feed.")
+              : (root.checking
+                ? "Connecting to the feed…"
+                : (root.searchText.trim() !== ""
+                  ? "No feed entries match this search."
+                  : "No unread updates in the feed."))
             color: root.dim
             font.family: root.family
             font.pixelSize: Style.font.bodySmall
@@ -196,11 +272,11 @@ Panel {
           }
 
           Column {
-            visible: root.items.length > 0
+            visible: root.visibleItems.length > 0
             width: parent.width
             spacing: 0
             Repeater {
-              model: root.items
+              model: root.visibleItems
               delegate: Column {
                 required property var modelData
                 required property int index
@@ -254,12 +330,51 @@ Panel {
                   height: Style.spacing.hairline
                   color: root.fg
                   opacity: 0.08
-                  visible: index < root.items.length - 1
+                  visible: index < root.visibleItems.length - 1
                 }
               }
             }
           }
         }
+      }
+
+      Rectangle {
+        visible: root.visibleItems.length > 10 && flick.contentY > 0
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.rightMargin: Style.space(14)
+        anchors.bottomMargin: Style.space(14)
+        width: Style.space(34)
+        height: Style.space(34)
+        radius: Style.space(6)
+        color: root.barObj ? root.barObj.background : Color.background
+        border.width: Style.spacing.hairline
+        border.color: root.dim
+        z: 10
+
+        Text {
+          anchors.centerIn: parent
+          text: "↑"
+          color: root.accent
+          font.family: root.family
+          font.pixelSize: Style.font.body
+          font.bold: true
+        }
+
+        MouseArea {
+          anchors.fill: parent
+          cursorShape: Qt.PointingHandCursor
+          onClicked: scrollToTop.start()
+        }
+      }
+
+      NumberAnimation {
+        id: scrollToTop
+        target: flick
+        property: "contentY"
+        to: 0
+        duration: 220
+        easing.type: Easing.OutCubic
       }
     }
   }

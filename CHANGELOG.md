@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.5.0] — 2026-09-28
+
+- Add text search across the feed and a return-to-top arrow for long lists.
+
 ## [1.4.0] — 2026-09-27
 
 - Remove the unread count from the bar icon and flash the icon red while unread updates are available.
