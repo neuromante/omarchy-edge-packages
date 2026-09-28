@@ -1,6 +1,6 @@
 # Omarchy Edge Packages — RSS Feed and Quickshell Widget
 
-**Version 1.5.0** · Public RSS feed of new and updated packages in Omarchy's `core`, `extra`, `multilib`, and `omarchy` edge repositories, with a Quickshell widget for the Omarchy bar.
+**Version 1.6.0** · Public RSS feed of new and updated packages in Omarchy's `core`, `extra`, `multilib`, and `omarchy` edge repositories, with a Quickshell widget for the Omarchy bar.
 
 ## RSS feed
 

@@ -90,6 +90,17 @@ Panel {
         boundsBehavior: Flickable.StopAtBounds
         interactive: contentHeight > height
 
+        WheelHandler {
+          acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+          property real speedMultiplier: 2.5
+          onWheel: function(event) {
+            var d = event.pixelDelta.y !== 0 ? event.pixelDelta.y : event.angleDelta.y / 120 * Style.space(40)
+            var maxY = Math.max(0, flick.contentHeight - flick.height)
+            flick.contentY = Math.max(0, Math.min(maxY, flick.contentY - d * speedMultiplier))
+            event.accepted = true
+          }
+        }
+
         Column {
           id: content
           width: flick.width

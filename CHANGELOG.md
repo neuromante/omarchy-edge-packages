@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.6.0] — 2026-09-28
+
+- Make panel scrolling respond faster to the touchpad and mouse wheel.
+
 ## [1.5.0] — 2026-09-28
 
 - Add text search across the feed and a return-to-top arrow for long lists.
