@@ -3,6 +3,11 @@ name: Publish Omarchy edge RSS
 on:
   schedule:
     - cron: "7,22,37,52 * * * *"
+  # GitHub's schedule trigger is best-effort and can be delayed or skipped.
+  # An external cron service can dispatch this event every 15 minutes instead.
+  # See "Keeping the feed fresh" in README.md.
+  repository_dispatch:
+    types: [publish-feed, publish-rss]
   workflow_dispatch:
 
 concurrency:
