@@ -34,7 +34,7 @@ Panel {
   }
   readonly property var visibleItems: filteredItems.slice(0, itemLimit)
   readonly property int totalCount: hostWidget ? hostWidget.totalCount : 0
-  readonly property int itemLimit: hostWidget ? hostWidget.itemLimit : 50
+  readonly property int itemLimit: hostWidget ? hostWidget.itemLimit : 25
   readonly property bool checking: hostWidget ? hostWidget.checking : false
   readonly property string error: hostWidget ? hostWidget.error : ""
 
@@ -132,7 +132,7 @@ Panel {
               anchors.verticalCenter: parent.verticalCenter
             }
             Repeater {
-              model: [10, 50, 100]
+              model: [5, 25, 50]
               delegate: Item {
                 required property int modelData
                 readonly property bool selected: root.itemLimit === modelData
@@ -289,10 +289,12 @@ Panel {
             Repeater {
               model: root.visibleItems
               delegate: Column {
+                id: rowItem
                 required property var modelData
                 required property int index
                 width: content.width
                 spacing: Style.space(4)
+                readonly property bool clickable: String(modelData.link || "").indexOf("http") === 0
 
                 Row {
                   width: parent.width
@@ -308,7 +310,7 @@ Panel {
                   Text {
                     width: parent.width - Style.space(80)
                     text: String(modelData.title || "Pacchetto edge")
-                    color: root.fg
+                    color: rowHover.hovered && rowItem.clickable ? root.accent : root.fg
                     font.family: root.family
                     font.pixelSize: Style.font.body
                     font.bold: true
@@ -342,6 +344,16 @@ Panel {
                   color: root.fg
                   opacity: 0.08
                   visible: index < root.visibleItems.length - 1
+                }
+
+                HoverHandler {
+                  id: rowHover
+                  cursorShape: rowItem.clickable ? Qt.PointingHandCursor : Qt.ArrowCursor
+                }
+
+                TapHandler {
+                  enabled: rowItem.clickable
+                  onTapped: root.openExternal(rowItem.modelData.link)
                 }
               }
             }

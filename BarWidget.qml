@@ -11,8 +11,8 @@ BarWidget {
   readonly property string readerScript: Qt.resolvedUrl("bin/read-feed.py").toString().replace("file://", "")
   readonly property string feedUrl: String(setting("feedUrl", "https://neuromante.github.io/omarchy-edge-packages/feed.xml"))
   readonly property int itemLimit: {
-    var n = parseInt(String(setting("itemLimit", "50")), 10)
-    return [10, 50, 100].indexOf(n) >= 0 ? n : 50
+    var n = parseInt(String(setting("itemLimit", "25")), 10)
+    return [5, 25, 50].indexOf(n) >= 0 ? n : 25
   }
   readonly property int refreshIntervalMs: {
     var minutes = Math.round(Number(setting("refreshIntervalMinutes", 15)))
@@ -29,6 +29,7 @@ BarWidget {
   property string error: ""
   property real lastChecked: 0
   property bool pending: false
+  property bool blinkActive: false
   property bool blinkDimmed: false
   property var panelItem: null
 
@@ -36,7 +37,18 @@ BarWidget {
   readonly property bool popoutSwitchClosing: panelItem ? panelItem.popoutSwitchClosing === true : false
   readonly property bool hasItems: totalCount > 0
 
-  onHasItemsChanged: blinkDimmed = false
+  // Flash the icon when new unread updates appear, then hold a steady red.
+  onTotalCountChanged: {
+    if (totalCount > 0) {
+      blinkDimmed = false
+      blinkActive = true
+      blinkStopTimer.restart()
+    } else {
+      blinkActive = false
+      blinkDimmed = false
+      blinkStopTimer.stop()
+    }
+  }
 
   function open() { if (panelItem && panelItem.openFromHotkey) panelItem.openFromHotkey() }
   function close() { if (panelItem && panelItem.close) panelItem.close() }
@@ -195,10 +207,21 @@ BarWidget {
   }
 
   Timer {
+    id: blinkTimer
     interval: 500
-    running: root.hasItems
+    running: root.blinkActive
     repeat: true
     onTriggered: root.blinkDimmed = !root.blinkDimmed
+  }
+
+  Timer {
+    id: blinkStopTimer
+    interval: 10000
+    repeat: false
+    onTriggered: {
+      root.blinkActive = false
+      root.blinkDimmed = false
+    }
   }
 
   Timer {

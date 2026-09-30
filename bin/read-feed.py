@@ -11,7 +11,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 
-ALLOWED_LIMITS = {10, 50, 100}
+ALLOWED_LIMITS = {5, 25, 50}
 MAX_FEED_BYTES = 1_000_000
 
 
@@ -20,7 +20,7 @@ def read_feed(url: str, limit: int) -> dict[str, object]:
         raise ValueError("The feed URL must use HTTPS")
     request = urllib.request.Request(
         url,
-        headers={"User-Agent": "omarchy-edge-packages-widget/1.7.0", "Accept": "application/rss+xml, application/xml, text/xml"},
+        headers={"User-Agent": "omarchy-edge-packages-widget/1.8.0", "Accept": "application/rss+xml, application/xml, text/xml"},
     )
     with urllib.request.urlopen(request, timeout=20) as response:
         if response.status != 200:

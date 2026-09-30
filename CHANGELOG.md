@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.8.0] — 2026-09-29
+
+- Replace the item-limit choices with 5, 25, and 50.
+- Open each feed entry's project page when it is clicked.
+- Flash the bar icon for ten seconds, then hold a steady red.
+
 ## [1.7.0] — 2026-09-29
 
 - Bump release metadata and the feed-reader user-agent to 1.7.0.

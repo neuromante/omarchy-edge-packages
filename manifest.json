@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "neuromante.omarchy-edge-packages",
   "name": "Omarchy Edge Packages",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "author": "neuromante",
   "description": "RSS feed of new and updated packages in Omarchy edge repositories",
   "kinds": [
@@ -18,7 +18,7 @@
     "allowMultiple": false,
     "defaultSection": "right",
     "defaults": {
-      "itemLimit": "50",
+      "itemLimit": "25",
       "refreshIntervalMinutes": 15,
       "feedUrl": "https://neuromante.github.io/omarchy-edge-packages/feed.xml"
     },
@@ -28,8 +28,8 @@
         "type": "enum",
         "label": "Packages to show",
         "description": "Maximum number of recent feed entries shown in the panel.",
-        "options": ["10", "50", "100"],
-        "defaultValue": "50"
+        "options": ["5", "25", "50"],
+        "defaultValue": "25"
       },
       {
         "key": "refreshIntervalMinutes",
