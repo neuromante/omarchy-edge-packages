@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.8.1] — 2026-10-01
+
+- Fix the item-limit selector: choosing 5 or 25 in the panel was silently rejected because the handler still validated against the old 10/50/100 list. All three choices (5, 25, 50) now apply.
+
 ## [1.8.0] — 2026-09-29
 
 - Replace the item-limit choices with 5, 25, and 50.

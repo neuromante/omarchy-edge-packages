@@ -20,7 +20,7 @@ def read_feed(url: str, limit: int) -> dict[str, object]:
         raise ValueError("The feed URL must use HTTPS")
     request = urllib.request.Request(
         url,
-        headers={"User-Agent": "omarchy-edge-packages-widget/1.8.0", "Accept": "application/rss+xml, application/xml, text/xml"},
+        headers={"User-Agent": "omarchy-edge-packages-widget/1.8.1", "Accept": "application/rss+xml, application/xml, text/xml"},
     )
     with urllib.request.urlopen(request, timeout=20) as response:
         if response.status != 200:
@@ -82,7 +82,7 @@ def main() -> None:
     try:
         limit = int(sys.argv[2])
         if limit not in ALLOWED_LIMITS:
-            raise ValueError("Invalid selection: choose 10, 50, or 100")
+            raise ValueError("Invalid selection: choose 5, 25, or 50")
         result = read_feed(sys.argv[1], limit)
     except Exception as exc:  # Emit an error state for the panel, never a traceback.
         result = {"items": [], "total": 0, "checked": int(time.time()), "error": str(exc)}

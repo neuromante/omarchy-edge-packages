@@ -123,7 +123,7 @@ BarWidget {
   }
 
   function setItemLimit(value) {
-    if ([10, 50, 100].indexOf(Number(value)) < 0) return
+    if ([5, 25, 50].indexOf(Number(value)) < 0) return
     if (root.itemLimit === Number(value)) return
     root.updateSetting("itemLimit", String(value))
     root.refresh()
