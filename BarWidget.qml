@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.Commons
+import qs.Commons as Commons
 import qs.Ui
 
 BarWidget {
@@ -186,7 +187,7 @@ BarWidget {
     bar: root.bar
     text: "\uf09e"
     active: root.hasItems
-    activeColor: Color.urgent
+    activeColor: Commons.Color.urgent
     opacity: root.hasItems && root.blinkDimmed ? 0.35 : 1.0
     tooltipText: root.tooltipText
     onPressed: function(b) {

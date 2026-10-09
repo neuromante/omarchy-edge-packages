@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.8.2] — 2026-10-09
+
+- Fix bar icon and panel colors after the Qt 6.12 / Quickshell update: reference the shell palette as `Commons.Color` through a qualified import, since the bare `Color` name no longer resolves to the shell singleton.
+
 ## [1.8.1] — 2026-10-01
 
 - Fix the item-limit selector: choosing 5 or 25 in the panel was silently rejected because the handler still validated against the old 10/50/100 list. All three choices (5, 25, 50) now apply.

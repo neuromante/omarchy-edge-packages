@@ -1,5 +1,6 @@
 import QtQuick
 import qs.Commons
+import qs.Commons as Commons
 import qs.Ui
 
 Panel {
@@ -12,9 +13,9 @@ Panel {
   property var hostWidget: null
   readonly property var barIdentity: hostWidget || root
   readonly property var barObj: root.bar
-  readonly property color fg: barObj ? barObj.foreground : Color.foreground
+  readonly property color fg: barObj ? barObj.foreground : Commons.Color.foreground
   readonly property color dim: Qt.darker(fg, 1.35)
-  readonly property color accent: Color.accent
+  readonly property color accent: Commons.Color.accent
   readonly property string family: barObj ? barObj.fontFamily : Style.font.family
   readonly property var items: hostWidget ? hostWidget.items : []
   readonly property var allFeedItems: hostWidget ? hostWidget.feedItems : []
@@ -202,7 +203,7 @@ Panel {
             width: parent.width
             height: Style.space(36)
             radius: Style.space(6)
-            color: root.barObj ? Qt.darker(root.barObj.background, 1.08) : Color.background
+            color: root.barObj ? Qt.darker(root.barObj.background, 1.08) : Commons.Color.background
             border.width: Style.spacing.hairline
             border.color: Qt.darker(root.fg, 1.5)
 
@@ -370,7 +371,7 @@ Panel {
         width: Style.space(34)
         height: Style.space(34)
         radius: Style.space(6)
-        color: root.barObj ? root.barObj.background : Color.background
+        color: root.barObj ? root.barObj.background : Commons.Color.background
         border.width: Style.spacing.hairline
         border.color: root.dim
         z: 10

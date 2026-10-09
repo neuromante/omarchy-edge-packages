@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "neuromante.omarchy-edge-packages",
   "name": "Omarchy Edge Packages",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "author": "neuromante",
   "description": "RSS feed of new and updated packages in Omarchy edge repositories",
   "kinds": [
